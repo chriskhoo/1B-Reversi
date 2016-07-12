@@ -8,10 +8,75 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
 body{
   height:100%;
   width:100%;
+  margin: 0;
 }
+
+header{
+  background-color: green;
+  border: 2px black solid;
+}
+
+main{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.playerPanel{
+  width: 20%;
+  border: 4px blue solid;
+}
+
+#gamePanel{
+  width: 50%;
+  border: 4px red solid;
+  padding: 1em;
+  border-radius: 100%;
+}
+
+#gameBoard{
+  border: 4px brown solid;
+  padding: 1em;
+  margin: auto;
+}
+
+section{
+  border: 5px purple solid;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: stretch;
+  margin: auto;
+  width: 90%;
+}
+
+.rowContainers{
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: stretch;
+}
+
+.tiles{
+  display: flex;
+  width: 12.5%;
+  padding-bottom: 12.5%;
+  border: 2px black solid;
+}
+
+.player1tile{
+  background-color: red;
+}
+
+.player2tile{
+  background-color: blue;
+}
+
 
 
 
