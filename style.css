@@ -1,0 +1,38 @@
+/*box-sizing fix*/
+html {
+  box-sizing: border-box;
+  height:100%;
+  width:100%;
+  margin:0;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body{
+  height:100%;
+  width:100%;
+}
+
+
+
+/*ipad landscape */
+/*@media only screen and (max-width: 960px) {
+
+}
+*/
+/* ipad portrait */
+/*@media only screen and (max-width: 640px) {
+
+}*/
+
+/* 480px iphone landscape */
+/*@media only screen and (max-width: 480px) {
+
+}
+*/
+
+/* 320 px, iphone portrait */
+/*@media only screen and (max-width: 320px) {
+
+}
+*/
