@@ -12,47 +12,122 @@ html {
 body{
   height:100%;
   width:100%;
-  margin: 0;
+  margin: auto;
+  background-color: black;
+  font-family:"STARWARS";
 }
 
+/*--- header -------------------------------- */
 header{
-  background-color: green;
-  border: 2px black solid;
+  background-color: black;
+  color: white;
+  text-align: center;
 }
 
+h1{
+  font-size: 2.8em;
+  line-height: 1em;
+  padding: 0;
+  margin: 0.2em 0 0 0;
+}
+header p{
+  font-size: 1em;
+  margin: 0 0 1em 0;
+}
+
+/*--- footer -------------------------------- */
+
+footer{
+  background-image: url('./images/castCall.jpg');
+  background-repeat: repeat-x;
+  height: 98px;
+  width: 100%;
+  text-align: center;
+}
+
+footer p{
+  padding: 0.2em;
+}
+
+/*--- main div -------------------------------- */
 main{
   display: flex;
+  flex-direction: column;
+  background-image: url('./images/starsWallPaper.gif');
+  background-repeat: repeat;
+  margin: 2em;
+}
+
+/*-------- score panel --------------------------- */
+#scoresContainer{
+  display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  align-items: stretch;
+  justify-content: center;
 }
 
 .playerPanel{
-  width: 20%;
-  border: 4px blue solid;
+  display: flex;
+  width: 10%;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  align-content: center;
+  margin: 0 1em;
 }
 
+.inactive {
+  opacity: 0.2;
+}
+
+.scores{
+  display: flex;
+  color: white;
+  font-size: 3em;
+  margin:0;
+}
+
+.icon{
+  display: flex;
+  height:3em;
+}
+
+#sponsorContainer{
+  display: flex;
+  flex-direction: column;
+  width: 8%;
+}
+
+#sponsors{
+  color: white;
+  font-size: 1em;
+  margin: 0;
+}
+
+#sponsorLogo{
+  display:flex;
+  width: 100%;
+  height: auto;
+}
+
+/*-------- game body --------------------------- */
+
 #gamePanel{
-  width: 50%;
-  border: 4px red solid;
-  padding: 1em;
+  width: 33%;
   border-radius: 100%;
+  margin: 1% auto;
 }
 
 #gameBoard{
-  border: 4px brown solid;
-  padding: 1em;
   margin: auto;
+  background: rgba(100,100,100,0.2);
 }
 
 section{
-  border: 5px purple solid;
   display: flex;
   flex-direction: column;
   align-content: center;
   align-items: stretch;
   margin: auto;
-  width: 90%;
 }
 
 .rowContainers{
@@ -66,23 +141,31 @@ section{
   display: flex;
   width: 12.5%;
   padding-bottom: 12.5%;
-  border: 2px black solid;
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
 .player1tile{
-  background-color: rgb(255,0,0);
+  background-image: url('./images/alliance2.gif');
+  background-size: cover;
 }
 
 .player2tile{
-  background-color: rgb( 0, 0,255);
+  background-image: url('./images/galacticEmpire.gif');
+  background-size: cover;
 }
 
 .validP1Move:hover {
-  background-color: rgb(255,150,150);
+  background-image: url('./images/alliance2.gif');
+  background-size: cover;
+  background-color: rgba(255,150,150,0.5);
+  /*opacity: 0.5;*/
 }
 
 .validP2Move:hover {
-  background-color: rgb(150,150,255);
+  background-image: url('./images/galacticEmpire.gif');
+  background-size: cover;
+  background-color: rgba(150,150,255,0.5);
+  /*opacity: 0.5;*/
 }
 
 /*ipad landscape */

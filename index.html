@@ -1,36 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
-  <title>Reversi</title>
-  <link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.css">
+  <title>REVERSI</title>
+  <link rel="stylesheet" href="fonts/font-awesome-4.6.3/css/font-awesome.css">
+  <link rel="stylesheet" href="fonts/starwars/stylesheet.css">
   <link href='https://fonts.googleapis.com/css?family=Kranky|Monoton|Mountains+of+Christmas|Rye|Sancreek' rel='stylesheet' type='text/css'>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
   <link href="style.css" rel="stylesheet" type="text/css">
 </head>
-  <body>
-      <header>
-        <h1>Reversi</h1>
-      </header>
-      <main>
-        <div class="playerPanel" id="panel1">
 
-        </div>
-        <div id="gamePanel">
-          <div id="gameBoard">
-            <section id="gameGrid">
-            </section>
-          </div>
-        </div>
-        <div  class="playerPanel" id="panel2">
+<body>
+  <header>
+    <h1>REVERSI</h1>
+    <p>Return of the dark side</p>
+  </header>
+  <main>
+    <div id = "scoresContainer">
+      <div class="playerPanel" id="p1Panel">
+        <img class="icon" src="./images/allianceIcon.png" alt="Player 2" />
+        <p class="scores" id="p1Score"></p>
+      </div>
+      <div class="playerPanel" id="sponsorContainer">
+        <p id="sponsors">Sponsor</p>
+        <img class="icon" id="sponsorLogo" src="./images/star-wars-coffee.jpg" alt="Sponsors" />
+      </div>
+      <div class="playerPanel inactive" id="p2Panel">
+        <img class="icon" src="./images/empireIcon.png" alt="Player 2" />
+        <h3 class="scores" id="p2Score"></h3>
+      </div>
+    </div>
+    <div id="gamePanel">
+      <div id="gameBoard">
+        <section id="gameGrid">
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>BY CHRIS KHOO</p>
+  </footer>
+  <script src="jquery.min.js" charset="utf-8">
+  </script>
+  <script type="text/javascript" src="main.js"></script>
 
-        </div>
-      </main>
-      <footer>
-      </footer>
-      <script  src="jquery.min.js" charset="utf-8"> </script>
-      <script  type="text/javascript" src="main.js"></script>
-      <audio id="errorS" src="./sounds/efx_NO-Fabio_Farinelli-Noncommercial.mp3"></audio>
-  </body>
+  <audio id="backgroundS" src="./sounds/stageSong.wav"></audio>
+  <audio id="errorS" src="./sounds/noGo.wav"></audio>
+  <audio id="p1WinsS" src="./sounds/yodaWins.wav"></audio>
+  <audio id="p2WinsS" src="./sounds/vaderWins.wav"></audio>
+  <audio id="drawS" src="./sounds/drawLaugh.wav"></audio>
+  <audio id="p1moveS" src="./sounds/LightsaberClash.mp3"></audio>
+  <audio id="p2moveS" src="./sounds/startSaber3.wav"></audio>
+</body>
+
 </html>

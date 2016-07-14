@@ -32,6 +32,8 @@ $(document).ready(function() {
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0]
     ],
+    player1Score: 2,
+    player2Score: 2,
   };
 
   var workingCalVar = {
@@ -46,9 +48,9 @@ $(document).ready(function() {
   var gameFunctions = {
 
     boardClick: function() {
-      console.log("click" + this.id);
       console.log("/////////////////////////////////");
       gameFunctions.checkIfValidMove.apply(this);
+      console.log("move valid: " + gameVariables.moveValid);
       if (gameVariables.moveValid) {
         gameFunctions.inputClick.apply(this);
         gameFunctions.computeMove.apply(this);
@@ -120,12 +122,22 @@ $(document).ready(function() {
       var currentValue = gameVariables.currentPlayer == 1 ? 1 : -1;
       checksNFlips.checkAndSum(clickedRow, clickedColumn, currentValue);
 
-      //if the move is invalid, prompt the player
-      if (workingCalVar.sumOfFlipCounters > 0) {
-        gameVariables.moveValid = true;
-      } else {
+      //if the move is invalid (occupied or no tiles to flip), prompt the player,
+      console.log("run 1");
+      if (gameVariables.boardData[clickedRow][clickedColumn]) {
+        console.log("function move valid should be false");
         gameVariables.moveValid = false;
-        $('#errorS').trigger('play');
+        sounds.playErrorS();
+      }
+      else {
+        if (workingCalVar.sumOfFlipCounters > 0) {
+          gameVariables.moveValid = true;
+          //play sounds effects for move
+          gameVariables.currentPlayer == 1 ? sounds.playP1moveS() : sounds.playP2moveS();
+        } else {
+          gameVariables.moveValid = false;
+          sounds.playErrorS();
+        }
       }
     },
 
@@ -154,8 +166,19 @@ $(document).ready(function() {
     },
 
     updateScores: function() {
-      console.log("update scores");
-      // use for each loops and total player scores to define this
+      // reset scores
+      gameVariables.player1Score = 0;
+      gameVariables.player2Score = 0;
+      for (i = 0; i < 64; i++) {
+        if (gameVariables.boardData[Math.floor(i / 8)][(i % 8)] == 1) {
+          gameVariables.player1Score++;
+        }
+        if (gameVariables.boardData[Math.floor(i / 8)][(i % 8)] == -1) {
+          gameVariables.player2Score++;
+        }
+      }
+      $('#p1Score').html(gameVariables.player1Score);
+      $('#p2Score').html(gameVariables.player2Score);
     },
 
     nextPlayer: function() {
@@ -166,7 +189,7 @@ $(document).ready(function() {
     checkGameOver: function() {
       gameVariables.currentRound++;
       // check to see if there are any remaining moves
-      if (gameVariables.currentRound === 61) {
+      if (gameVariables.currentRound === 62) {
         gameVariables.gameOver = true;
       }
       // check to see if empty squares are valid moves
@@ -179,12 +202,44 @@ $(document).ready(function() {
     },
 
     gameOverSequence: function() {
-      alert("There are no more moves! You're done!");
-      //display who won and the scores
+      if (gameVariables.player1Score == gameVariables.player2Score) {
+        sounds.playDrawS();
+        alert("It's a draw, there are no winners!");
+      } else if (gameVariables.player1Score > gameVariables.player2Score) {
+        sounds.playP1WinsS();
+        alert('Player 1 wins!\nP1: ' + gameVariables.player1Score + '\nP2: ' + gameVariables.player2Score);
+      } else {
+        sounds.playP2WinsS();
+        alert('Player 2 wins!\nP1: ' + gameVariables.player1Score + '\nP2: ' + gameVariables.player2Score);
+      }
     },
 
     nextPlayerPrompt: function() {
-      //display a current player prompt
+      //if player 1's turn
+      if (gameVariables.currentPlayer == 1) {
+        // check to see if player 1 is inactive and remove inactive
+        if ($("#p1Panel").hasClass("inactive") === true) {
+          $("#p1Panel").toggleClass("inactive");
+        }
+
+        // check to see if player 2 is inactive, if not, add inactive to player 2 panel
+        if ($("#p2Panel").hasClass("inactive") === false) {
+          $("#p2Panel").toggleClass("inactive");
+        }
+
+      }
+      //if player 2's turn
+      else {
+        // check to see if player 2 is inactive and remove inactive
+        if ($("#p2Panel").hasClass("inactive") === true) {
+          $("#p2Panel").toggleClass("inactive");
+        }
+
+        // check to see if player 1 is inactive, if not, add inactive to player 1 panel
+        if ($("#p1Panel").hasClass("inactive") === false) {
+          $("#p1Panel").toggleClass("inactive");
+        }
+      }
     },
 
     updateValidMovesArray: function() {
@@ -236,8 +291,6 @@ $(document).ready(function() {
           gameVariables.numberOfValidMoves++;
         }
       }
-      console.log(gameVariables.validMovesArray);
-      console.log(gameVariables.numberOfValidMoves);
     }
 
   };
@@ -497,10 +550,10 @@ $(document).ready(function() {
 
   function init() {
     console.log('file initialized');
-    gameVariables.boardData[3][3] = 1;
-    gameVariables.boardData[3][4] = -1;
-    gameVariables.boardData[4][3] = -1;
-    gameVariables.boardData[4][4] = 1;
+    gameVariables.boardData[3][3] = -1;
+    gameVariables.boardData[3][4] = 1;
+    gameVariables.boardData[4][3] = 1;
+    gameVariables.boardData[4][4] = -1;
 
   }
 
@@ -511,13 +564,50 @@ $(document).ready(function() {
     gameFunctions.redrawBoard();
     gameFunctions.updateScores();
     gameFunctions.checkGameOver();
+    sounds.playBackgroundS();
+
   }
 
   var sounds = {
+    playBackgroundS: function() {
+      $('#backgroundS').prop('loop', true);
+      $('#backgroundS').get(0).play();
+    },
+
     playErrorS: function() {
       $('#errorS').get(0).pause();
       $('#errorS').get(0).currentTime = 0;
       $('#errorS').get(0).play();
+    },
+
+    playP1WinsS: function() {
+      $('#p1WinsS').get(0).pause();
+      $('#p1WinsS').get(0).currentTime = 0;
+      $('#p1WinsS').get(0).play();
+    },
+
+    playP2WinsS: function() {
+      $('#p2WinsS').get(0).pause();
+      $('#p2WinsS').get(0).currentTime = 0;
+      $('#p2WinsS').get(0).play();
+    },
+
+    playDrawS: function() {
+      $('#drawS').get(0).pause();
+      $('#drawS').get(0).currentTime = 0;
+      $('#drawS').get(0).play();
+    },
+
+    playP1moveS: function() {
+      $('#p1moveS').get(0).pause();
+      $('#p1moveS').get(0).currentTime = 0;
+      $('#p1moveS').get(0).play();
+    },
+
+    playP2moveS: function() {
+      $('#p2moveS').get(0).pause();
+      $('#p2moveS').get(0).currentTime = 0;
+      $('#p2moveS').get(0).play();
     },
 
   };
