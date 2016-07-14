@@ -20,7 +20,18 @@ $(document).ready(function() {
     moveValid: true,
     gameOver: false,
     currentRound: 1,
-
+    numberOfValidMoves: 1,
+    validMovesArray: [
+      // 0 is empty, 1 is player 1, -1 is player 2
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0]
+    ],
   };
 
   var workingCalVar = {
@@ -33,6 +44,26 @@ $(document).ready(function() {
 
   // game functions
   var gameFunctions = {
+
+    boardClick: function() {
+      console.log("click" + this.id);
+      console.log("/////////////////////////////////");
+      gameFunctions.checkIfValidMove.apply(this);
+      if (gameVariables.moveValid) {
+        gameFunctions.inputClick.apply(this);
+        gameFunctions.computeMove.apply(this);
+        gameFunctions.redrawBoard();
+        gameFunctions.updateScores();
+        gameFunctions.nextPlayer();
+        gameFunctions.checkGameOver();
+      }
+      if (gameVariables.gameOver) {
+        gameFunctions.gameOverSequence();
+      } else {
+        gameFunctions.nextPlayerPrompt();
+      }
+    },
+
     // construct tiles
     makeBoard: function() {
       // create 8 row containers
@@ -55,35 +86,21 @@ $(document).ready(function() {
     redrawBoard: function() {
       // redraw the board following updates
       for (i = 0; i < 64; i++) {
+        // get current div
         var tile = $('#board' + (Math.floor(i / 8)) + (i % 8));
 
+        // if JS array says tile is player 1, assign class
         if (gameVariables.boardData[Math.floor(i / 8)][(i % 8)] === 1) {
-          // console.log("tile" + Math.floor(i / 8) + (i % 8) + ": p1");
           tile.attr("class", "tiles player1tile");
-        } else if (gameVariables.boardData[Math.floor(i / 8)][(i % 8)] === -1) {
-          // console.log("tile" + Math.floor(i / 8) + (i % 8) + ": p2");
+        }
+        // if JS array says tile is player 2, assign class
+        else if (gameVariables.boardData[Math.floor(i / 8)][(i % 8)] === -1) {
           tile.attr("class", "tiles player2tile");
         }
+        // console log the blank tiles
         // else {
         //   console.log("tile" + Math.floor(i / 8) + (i % 8) + ": " + gameVariables.boardData[Math.floor(i / 8)][(i % 8)]);
         // }
-      }
-    },
-
-    boardClick: function() {
-      console.log("click" + this.id);
-      console.log("/////////////////////////////////");
-      gameFunctions.checkIfValidMove.apply(this);
-      if (gameVariables.moveValid) {
-        gameFunctions.inputClick.apply(this);
-        gameFunctions.computeMove.apply(this);
-        gameFunctions.redrawBoard();
-        gameFunctions.updateScores();
-        gameFunctions.nextPlayer();
-        gameFunctions.checkGameOver();
-      }
-      if (gameVariables.gameOver) {
-        gameFunctions.gameOverSequence();
       }
     },
 
@@ -101,32 +118,14 @@ $(document).ready(function() {
       var clickedRow = Number(this.id[5]);
       var clickedColumn = Number(this.id[6]);
       var currentValue = gameVariables.currentPlayer == 1 ? 1 : -1;
-
-      //run checks then sum the working variables to sumOfFlipCounters before the next check resets it
-      checksNFlips.checkRight(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkLeft(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkUp(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkDown(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkDiagonalUR(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkDiagonalUL(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkDiagonalDR(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
-      checksNFlips.checkDiagonalDL(clickedRow, clickedColumn, currentValue);
-      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkAndSum(clickedRow, clickedColumn, currentValue);
 
       //if the move is invalid, prompt the player
-      if(workingCalVar.sumOfFlipCounters > 0){
+      if (workingCalVar.sumOfFlipCounters > 0) {
         gameVariables.moveValid = true;
-      }
-      else{
+      } else {
         gameVariables.moveValid = false;
-        alert("Invalid move");
+        $('#errorS').trigger('play');
       }
     },
 
@@ -166,17 +165,80 @@ $(document).ready(function() {
 
     checkGameOver: function() {
       gameVariables.currentRound++;
+      // check to see if there are any remaining moves
       if (gameVariables.currentRound === 61) {
         gameVariables.gameOver = true;
       }
-      // check to see if there are any remaining valid moves
+      // check to see if empty squares are valid moves
+      gameFunctions.updateValidMovesArray();
+      gameFunctions.countNumberOfValidMoves();
+      if (gameVariables.numberOfValidMoves <= 0) {
+        gameVariables.gameOver = true;
+      }
+
     },
 
     gameOverSequence: function() {
-      alert("Game is over");
+      alert("There are no more moves! You're done!");
       //display who won and the scores
     },
 
+    nextPlayerPrompt: function() {
+      //display a current player prompt
+    },
+
+    updateValidMovesArray: function() {
+      // go through all elements to populate the array
+      for (i = 0; i < 64; i++) {
+        // reset working variable
+        workingCalVar.sumOfFlipCounters = 0;
+        // get coordinates for all squares
+        var rowNum = Math.floor(i / 8);
+        var columnNum = (i % 8);
+        var currentValue = gameVariables.currentPlayer == 1 ? 1 : -1;
+        checksNFlips.checkAndSum(rowNum, columnNum, currentValue);
+        // if position on board is empty, store potential points in validMovesArray, if occupied store 0
+        gameVariables.validMovesArray[rowNum][columnNum] = gameVariables.boardData[rowNum][columnNum] === 0 ? workingCalVar.sumOfFlipCounters : 0;
+
+        // Add a class of valid player moves to the div
+        // for p1
+        if (gameVariables.currentPlayer == 1) {
+          // remove old valid moves for p2
+          if ($("#board" + rowNum + columnNum).hasClass("validP2Move") === true) {
+            $("#board" + rowNum + columnNum).toggleClass("validP2Move");
+          }
+          // update new valid moves
+          if (gameVariables.validMovesArray[rowNum][columnNum] !== 0) {
+            $("#board" + rowNum + columnNum).toggleClass("validP1Move");
+          }
+        }
+        // for p2
+        else {
+          // remove valid moves for p1
+          if ($("#board" + rowNum + columnNum).hasClass("validP1Move") === true) {
+            $("#board" + rowNum + columnNum).toggleClass("validP1Move");
+          }
+          // update new valid moves for p2
+          if (gameVariables.validMovesArray[rowNum][columnNum] !== 0) {
+            $("#board" + rowNum + columnNum).toggleClass("validP2Move");
+          }
+        }
+
+      }
+    },
+
+    countNumberOfValidMoves: function() {
+      // initialize variable
+      gameVariables.numberOfValidMoves = 0;
+      // count number of valid moves in the array
+      for (i = 0; i < 64; i++) {
+        if (gameVariables.validMovesArray[Math.floor(i / 8)][(i % 8)] > 0) {
+          gameVariables.numberOfValidMoves++;
+        }
+      }
+      console.log(gameVariables.validMovesArray);
+      console.log(gameVariables.numberOfValidMoves);
+    }
 
   };
 
@@ -407,8 +469,29 @@ $(document).ready(function() {
 
     summingTilesFlipped: function() {
       if (workingCalVar.flipDecision && workingCalVar.flipCounter > 0) {
-      workingCalVar.sumOfFlipCounters += workingCalVar.flipCounter;
-    }},
+        workingCalVar.sumOfFlipCounters += workingCalVar.flipCounter;
+      }
+    },
+
+    checkAndSum: function(clickedRow, clickedColumn, currentValue) {
+      //run checks then sum the working variables to sumOfFlipCounters before the next check resets it
+      checksNFlips.checkRight(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkLeft(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkUp(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkDown(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkDiagonalUR(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkDiagonalUL(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkDiagonalDR(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+      checksNFlips.checkDiagonalDL(clickedRow, clickedColumn, currentValue);
+      checksNFlips.summingTilesFlipped();
+    },
 
   };
 
@@ -426,8 +509,19 @@ $(document).ready(function() {
     gameFunctions.makeBoard();
     init();
     gameFunctions.redrawBoard();
-
+    gameFunctions.updateScores();
+    gameFunctions.checkGameOver();
   }
+
+  var sounds = {
+    playErrorS: function() {
+      $('#errorS').get(0).pause();
+      $('#errorS').get(0).currentTime = 0;
+      $('#errorS').get(0).play();
+    },
+
+  };
+
 
 
   main();

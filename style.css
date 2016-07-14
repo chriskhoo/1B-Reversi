@@ -70,15 +70,20 @@ section{
 }
 
 .player1tile{
-  background-color: red;
+  background-color: rgb(255,0,0);
 }
 
 .player2tile{
-  background-color: blue;
+  background-color: rgb( 0, 0,255);
 }
 
+.validP1Move:hover {
+  background-color: rgb(255,150,150);
+}
 
-
+.validP2Move:hover {
+  background-color: rgb(150,150,255);
+}
 
 /*ipad landscape */
 /*@media only screen and (max-width: 960px) {
