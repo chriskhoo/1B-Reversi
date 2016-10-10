@@ -22,7 +22,7 @@ For more information, please refer to : [Rules][1]
 
 Design
 ------
-This game was final of 3 game projects put together following the first 2 week of programming at GA's WDI course. In this project, my goal was to practice the development of game logic and to practice the use OOP as much as I was able. Due to these design parameters, I used no external references to reversi programming logic - i.e. the code might not be the simplest nor most efficient.
+This game was final of 3 game projects put together following the first 2 week of programming at GA's WDI course. In this project, my goal was to practice the development of game logic and to practice using OOP. Due to these design parameters, I used no external references to reversi programming logic - i.e. the code might not be the simplest nor most efficient.
 
 References and stacks
 ---------------------
